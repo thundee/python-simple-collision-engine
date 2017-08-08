@@ -1,0 +1,54 @@
+import collider
+import math
+import matplotlib.pyplot as plt
+
+rect_sides = [
+    collider.create_line(-2, 2, 2, 2),
+    collider.create_line(2, 2, 2, -2),
+    collider.create_line(2, -2, -2, -2),
+    collider.create_line(-2, -2, -2, 2)
+]
+
+rectangle = collider.Polygon(rect_sides)
+print(rectangle.dump())
+
+rectangle.rotate(math.radians(20))
+#print(rectangle.dump())
+
+coords = [
+    [rectangle.sides[0]['end']['x'], rectangle.sides[0]['end']['y']],
+    [rectangle.sides[1]['end']['x'], rectangle.sides[1]['end']['y']],
+    [rectangle.sides[2]['end']['x'], rectangle.sides[2]['end']['y']],
+    [rectangle.sides[3]['end']['x'], rectangle.sides[3]['end']['y']]
+]
+
+coords.append(coords[0])
+
+xs, ys = zip(*coords)
+
+#plt.figure()
+#plt.plot(xs, ys)
+#plt.show()
+
+
+def intersect(line1, line2):
+    def ccw(A, B, C):
+        return (C['y']-A['y'])*(B['x']-A['x']) > (B['y']-A['y'])*(C['x']-A['x'])
+
+    ccw1 = ccw(line1['beg'], line2['beg'], line2['end'])
+    ccw2 = ccw(line['end'], line['beg'], line['end'])
+    ccw3 = ccw(line1['beg'], line1['end'], line2['beg'])
+    ccw4 = ccw(line1['beg'], line1['end'], line2['end'])
+
+    return ccw1 != ccw2 and ccw3 != ccw4
+
+print(intersect(
+    {
+        "beg": {"x": 0, "y": 0},
+        "end": {"x": 5, "y": 5}
+    },
+    {
+        "beg": {"x": 0, "y": 5},
+        "end": {"x": 5, "y": 0}
+    }
+))
